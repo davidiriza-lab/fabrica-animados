@@ -4,6 +4,8 @@ Videos explicativos verticales (9:16) de esos que arman algo **problema por prob
 
 Todo es código: el guion es un archivo de texto, la animación es una escena en JavaScript y el render sale de tu compu. No usa generadores de video con IA, así que no gastas créditos de video y cada video sale igual cada vez que lo renderizas. Está pensado para trabajarse con **Claude Code**: tú le pides el video y Claude escribe el guion, la voz, la animación y lo revisa antes de renderizar.
 
+La guía paso a paso está en el Lab: **[Videos animados con Claude](https://www.davidiriza.com/lab/videos-animados-con-claude)**.
+
 ## Cómo se ven
 
 Los seis videos de ejemplo vienen en [Releases](../../releases) (MP4 listos para ver) y su código está en `videos/`:
