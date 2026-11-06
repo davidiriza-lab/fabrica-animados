@@ -1,0 +1,166 @@
+{
+  "titulo": "Cómo crear un embudo en Meta",
+  "estilo": "pizarra",
+  "gancho_post": "Le picaste a «promocionar» y no vendiste nada. Te faltan estas piezas 👇",
+  "copy": "Le picaste a «promocionar» y no vendiste nada. Te faltan estas piezas 👇\n\nArmamos un embudo en Meta desde cero, problema por problema: objetivo, landing, píxel, lead magnet, creativos, seguimiento, remarketing y oferta.\n\n¿Cuál le falta a tu campaña? 👇\n\n#marketingdigital #metaads #embudodeventas #facebookads #emprendedores",
+  "voz": {},
+  "marca": "",
+  "beats": [
+    {
+      "id": "base",
+      "tipo": "base",
+      "texto": "Si subes una foto a tu página y le picas a promocionar, ya tienes una campaña.",
+      "clave": "una campaña"
+    },
+    {
+      "id": "cualquiera",
+      "tipo": "problema",
+      "texto": "Pero Meta se la enseña a cualquiera, y pagas por likes de gente que nunca te va a comprar.",
+      "clave": "likes"
+    },
+    {
+      "id": "elige",
+      "tipo": "solucion",
+      "texto": "Así que le dices a Meta qué quieres de verdad: no likes, sino registros.",
+      "clave": "sino registros"
+    },
+    {
+      "id": "objetivo",
+      "tipo": "termino",
+      "texto": "Ese es el objetivo de la campaña.",
+      "termino": "objetivo"
+    },
+    {
+      "id": "perfil",
+      "tipo": "problema",
+      "texto": "Pero el clic lleva a tu perfil, y ahí nadie sabe qué hacer.",
+      "clave": "nadie sabe qué hacer"
+    },
+    {
+      "id": "pagina",
+      "tipo": "solucion",
+      "texto": "Entonces haces una página con una sola promesa y un solo botón.",
+      "clave": "un solo botón"
+    },
+    {
+      "id": "landing",
+      "tipo": "termino",
+      "texto": "Esa es la landing.",
+      "termino": "landing"
+    },
+    {
+      "id": "ciego",
+      "tipo": "problema",
+      "texto": "Pero Meta no ve quién se registra en tu página, así que no sabe a quién buscar.",
+      "clave": "a quién buscar"
+    },
+    {
+      "id": "codigo",
+      "tipo": "solucion",
+      "texto": "Así que pones en la landing un código que le avisa a Meta cada vez que alguien se registra, y Meta busca a más gente como esa.",
+      "clave": "le avisa a Meta"
+    },
+    {
+      "id": "pixel",
+      "tipo": "termino",
+      "texto": "Ese es el píxel.",
+      "termino": "píxel"
+    },
+    {
+      "id": "desconocido",
+      "tipo": "problema",
+      "texto": "Pero nadie le da su WhatsApp a un desconocido nomás porque sí.",
+      "clave": "nomás porque sí"
+    },
+    {
+      "id": "regalo",
+      "tipo": "solucion",
+      "texto": "Por eso le regalas algo a cambio: una clase gratis, una guía o un descuento.",
+      "clave": "una clase gratis"
+    },
+    {
+      "id": "leadmagnet",
+      "tipo": "termino",
+      "texto": "Ese es el lead magnet.",
+      "termino": "lead magnet"
+    },
+    {
+      "id": "cansa",
+      "tipo": "problema",
+      "texto": "Pero con un solo anuncio, la gente lo ve una y otra vez, y deja de funcionar.",
+      "clave": "deja de funcionar"
+    },
+    {
+      "id": "varios",
+      "tipo": "solucion",
+      "texto": "Entonces haces varios anuncios distintos: otra persona hablando, otra idea, otro formato.",
+      "clave": "varios anuncios"
+    },
+    {
+      "id": "creativos",
+      "tipo": "termino",
+      "texto": "Esos son los creativos.",
+      "termino": "creativos"
+    },
+    {
+      "id": "ahorasi",
+      "tipo": "giro",
+      "texto": "Ahora sí te llegan registros.",
+      "clave": "te llegan registros"
+    },
+    {
+      "id": "olvidan",
+      "tipo": "problema",
+      "texto": "Hasta que la mitad de los registrados ni se acuerda de ti al otro día.",
+      "clave": "ni se acuerda"
+    },
+    {
+      "id": "whatsapp",
+      "tipo": "solucion",
+      "texto": "Por eso les escribes por WhatsApp en los primeros cinco minutos, y les recuerdas la clase un día antes.",
+      "clave": "los primeros cinco minutos"
+    },
+    {
+      "id": "seguimiento",
+      "tipo": "termino",
+      "texto": "Ese es el seguimiento.",
+      "termino": "seguimiento"
+    },
+    {
+      "id": "sevan",
+      "tipo": "problema",
+      "texto": "Pero muchos entran a tu página, no se registran y se van.",
+      "clave": "se van"
+    },
+    {
+      "id": "otravez",
+      "tipo": "solucion",
+      "texto": "Entonces les enseñas otro anuncio solo a ellos, a la gente que ya te visitó.",
+      "clave": "ya te visitó"
+    },
+    {
+      "id": "remarketing",
+      "tipo": "termino",
+      "texto": "Ese es el remarketing.",
+      "termino": "remarketing"
+    },
+    {
+      "id": "nocompran",
+      "tipo": "problema",
+      "texto": "Pero en la clase nadie compra si no tiene una razón para hacerlo hoy.",
+      "clave": "una razón para hacerlo hoy"
+    },
+    {
+      "id": "bono",
+      "tipo": "solucion",
+      "texto": "Así que cierras con un bono que solo dura esa noche.",
+      "clave": "solo dura esa noche"
+    },
+    {
+      "id": "oferta",
+      "tipo": "termino",
+      "texto": "Esa es la oferta.",
+      "termino": "oferta"
+    }
+  ]
+}

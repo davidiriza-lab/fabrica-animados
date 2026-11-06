@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>__TITULO__</title>
+    <script src="motor/vendor/gsap.min.js"></script>
+    <script type="importmap">
+      { "imports": { "three": "./motor/vendor/three.module.js", "three/addons/": "./motor/vendor/addons/" } }
+    </script>
+    <style>
+      @font-face { font-family: "Lilita One"; src: url("motor/fuentes/LilitaOne.ttf"); font-display: block; }
+      @font-face { font-family: "Fredoka"; src: url("motor/fuentes/Fredoka.ttf"); font-weight: 300 700; font-display: block; }
+      @font-face { font-family: "Anton"; src: url("motor/fuentes/Anton.ttf"); font-display: block; }
+      @font-face { font-family: "Kalam"; src: url("motor/fuentes/Kalam-Bold.ttf"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "Barlow Condensed"; src: url("motor/fuentes/BarlowCondensed-ExtraBoldItalic.ttf"); font-weight: 800; font-style: italic; font-display: block; }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      #mundo { position: absolute; inset: 0; width: 1080px; height: 1920px; display: block; }
+      #textos { position: absolute; inset: 0; pointer-events: none; }
+
+      /* ---- modo frase (toon): frase clave arriba, palabra por palabra ---- */
+      .frase { --color-frase: #15171c; position: absolute; top: 250px; left: 60px; right: 60px; text-align: center; opacity: 0;
+        font-family: "Lilita One", sans-serif; font-size: 78px; line-height: 1.05; letter-spacing: 0.5px; }
+      .frase span { display: inline-block; margin: 0 0.13em; color: var(--color-frase);
+        -webkit-text-stroke: 14px #ffffff; paint-order: stroke fill; transform-origin: 50% 80%; }
+      .frase.roja { --color-frase: #e8322b; }
+
+      /* ---- modo palabra: una palabra a la vez, centrada abajo ---- */
+      .palabra { position: absolute; top: 1220px; left: 0; right: 0; text-align: center; opacity: 0; color: #fff;
+        font-family: "Lilita One", sans-serif; font-size: 92px; -webkit-text-stroke: 12px #15171c; paint-order: stroke fill; }
+      .palabra.clave { color: #ffc93c; }
+      .estilo-maqueta .palabra { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-style: italic; text-transform: uppercase;
+        font-size: 66px; letter-spacing: 1px; -webkit-text-stroke: 0; text-shadow: 0 3px 0 rgba(0,0,0,.55), 0 0 14px rgba(0,0,0,.35); top: 1300px; }
+      .estilo-maqueta .palabra.clave { color: #ffd23f; }
+
+      /* ---- pizarra: letra de plumón; término subrayado con marcatexto amarillo ---- */
+      .estilo-pizarra .frase { --color-frase: #1d1d1f; font-family: "Kalam", cursive; font-weight: 700; font-size: 84px; top: 230px; }
+      .estilo-pizarra .frase span { -webkit-text-stroke: 0; text-shadow: none; }
+      /* franja de papel FIJA arriba (encabezado): el subtítulo vive ahí y lo dibujado pasa por debajo.
+         Fija y no por frase: un parche que aparece y desaparece borra y devuelve piezas (parpadeo; vigía 6-nov-2026) */
+      .estilo-pizarra #textos::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 450px;
+        background: linear-gradient(#fbfaf6 0, #fbfaf6 82%, rgba(251,250,246,0) 100%); }
+      .estilo-pizarra .frase.roja { --color-frase: #e8322b; }
+      .estilo-pizarra .frase.termino span { background: linear-gradient(transparent 55%, rgba(255,210,63,.85) 55%, rgba(255,210,63,.85) 92%, transparent 92%); padding: 0 .08em; }
+
+      /* ---- título del término ---- */
+      .titulo-termino { position: absolute; top: 330px; left: 40px; right: 40px; text-align: center; opacity: 0;
+        font-family: "Lilita One", sans-serif; font-size: 120px; line-height: 1; text-transform: uppercase; color: #ffc93c;
+        -webkit-text-stroke: 16px #15171c; paint-order: stroke fill; }
+      .estilo-maqueta .titulo-termino { font-family: "Barlow Condensed", sans-serif; font-style: italic; font-weight: 800; color: #fff;
+        -webkit-text-stroke: 0; text-shadow: 0 6px 0 rgba(0,0,0,.5); }
+
+      /* ---- rótulos PERO… / ENTONCES ---- */
+      .rotulo { position: absolute; top: 470px; left: 0; right: 0; text-align: center; opacity: 0; font-family: "Anton", sans-serif;
+        font-size: 150px; letter-spacing: 2px; -webkit-text-stroke: 14px #15171c; paint-order: stroke fill; }
+      .rotulo.rojo { color: #ff4a3d; } .rotulo.amarillo { color: #ffd23f; }
+      /* ---- rebobinado ---- */
+      .rebobinar { position: absolute; top: 860px; left: 0; right: 0; text-align: center; opacity: 0; font-size: 170px; color: #fff;
+        text-shadow: 0 6px 0 rgba(0,0,0,.35), 0 0 30px rgba(0,0,0,.25); letter-spacing: -30px; }
+      /* ---- barra de piezas ---- */
+      .progreso { position: absolute; left: 60px; right: 60px; bottom: 210px; display: flex; gap: 10px; opacity: 0; }
+      .progreso .casilla { flex: 1; height: 54px; border-radius: 14px; border: 4px solid #15171c; background: rgba(255,255,255,.25);
+        display: flex; align-items: center; justify-content: center; overflow: hidden; }
+      .progreso .casilla span { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 19px; color: #15171c; text-align: center; line-height: 1; padding: 0 4px; }
+      /* ---- tarjeta de dato ---- */
+      .tarjeta-dato { position: absolute; left: 50%; top: 1380px; transform: translateX(-50%); opacity: 0; background: #ffffff; border: 6px solid #15171c;
+        border-radius: 28px; padding: 18px 40px; text-align: center; box-shadow: 0 10px 0 #15171c; min-width: 380px; }
+      .tarjeta-dato b { display: block; font-family: "Anton", sans-serif; font-size: 110px; line-height: 1; color: #e8322b; }
+      .tarjeta-dato span { display: block; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 38px; color: #15171c; }
+
+      .marca { position: absolute; right: 40px; bottom: 300px; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 30px;
+        color: rgba(255,255,255,.75); text-shadow: 0 2px 6px rgba(0,0,0,.45); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="__DURACION__" data-width="1080" data-height="1920">
+      <canvas id="mundo" class="clip" data-start="0" data-duration="__DURACION__" data-track-index="0" width="1080" height="1920"></canvas>
+      <div id="textos" class="clip" data-start="0" data-duration="__DURACION__" data-track-index="1"></div>
+      <audio id="narracion" src="audio/narracion.wav" data-start="0" data-duration="__DURACION__" data-track-index="5" data-volume="1"></audio>
+      __MUSICA__
+      __SFX__
+    </div>
+
+    <script>
+      window.T = __TIMING__;
+      window.PLAN = __PLAN__;
+      window.__timelines = window.__timelines || {};
+      window.tl = gsap.timeline({ paused: true });
+      window.tl.set({}, {}, window.T.duracion);   // la línea de tiempo dura lo mismo que el video
+      window.__timelines["main"] = window.tl;
+    </script>
+    <script src="motor/textos.js"></script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { crearMundo } from "./motor/mundo.js";
+      import { instalarPiezas } from "./motor/piezas.js";
+      import construir from "./escena.js";
+      window.THREE = THREE;
+      const T = window.T, PLAN = window.PLAN;
+      const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9ñ%]/g, "");
+      const idx = (b) => (typeof b === "number" ? b : PLAN.beats.findIndex((x) => x.id === b));
+      // V: los tiempos de la voz para coreografiar la escena
+      const V = {
+        dur: T.duracion,
+        // inicio y fin del beat (por número o por id)
+        beat(b) { const i = idx(b), ps = T.palabras.filter((p) => p.beat === i); return ps.length ? { ini: ps[0].ini, fin: ps[ps.length - 1].fin } : { ini: 0, fin: 0 }; },
+        // segundo en que se dice una palabra dentro del beat; "palabra#2" = la segunda vez; prefijo con "*": "conect*"
+        dice(b, palabra, respaldo = 0.4) {
+          const i = idx(b);
+          let n = 0, w = palabra;
+          if (w.includes("#")) { [w, n] = w.split("#"); n = Number(n) - 1; }
+          const pref = w.endsWith("*"), k = norm(w.replace("*", ""));
+          let c = 0;
+          for (const p of T.palabras) {
+            if (p.beat !== i) continue;
+            const x = norm(p.w);
+            if (pref ? x.startsWith(k) : x === k) { if (c === n) return p.ini; c++; }
+          }
+          const r = V.beat(b);
+          console.warn(`[escena] no encontré "${palabra}" en el beat ${b}; uso respaldo`);
+          return r.ini + (r.fin - r.ini) * respaldo;
+        },
+      };
+      V.beats = PLAN.beats.map((_, i) => V.beat(i).ini);
+      window.__V = V;
+      const modoTexto = (PLAN.textos && PLAN.textos.modo) || (["toon", "pizarra"].includes(PLAN.estilo || "toon") ? "frase" : "palabra");
+      const M = crearMundo({ estilo: PLAN.estilo || "toon", bandaTexto: modoTexto === "palabra" ? "abajo" : "arriba", ...(PLAN.mundo || {}) });
+      await document.fonts.ready;
+      instalarPiezas(M);
+      construir(M, V, PLAN);
+      M.prepararTomas(V.dur);   // la cámara por intención (camara.mostrar) se calcula con la escena ya construida
+      window.__M = M;
+      window.addEventListener("hf-seek", (e) => M.render(e.detail.time));
+      M.render(window.__hfThreeTime || 0);
+    </script>
+  </body>
+</html>

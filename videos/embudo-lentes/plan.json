@@ -1,0 +1,173 @@
+{
+  "titulo": "Cómo crear un embudo en Meta (venta de producto)",
+  "estilo": "motion",
+  "gancho_post": "Le picaste a «promocionar» y no vendiste ni unos lentes. Te faltan estas piezas 👇",
+  "copy": "Le picaste a «promocionar» y no vendiste ni unos lentes. Te faltan estas piezas 👇\n\nArmamos un embudo de venta en Meta desde cero, problema por problema: objetivo, página de producto, píxel, prueba social, creativos, recuperación de carrito, remarketing y oferta.\n\n¿Cuál le falta a tu campaña? 👇\n\n#marketingdigital #metaads #embudodeventas #ecommerce #emprendedores",
+  "voz": {},
+  "marca": "",
+  "beats": [
+    {
+      "id": "base",
+      "tipo": "base",
+      "texto": "Si subes una foto de tus lentes y le picas a promocionar, ya tienes una campaña.",
+      "clave": "una campaña"
+    },
+    {
+      "id": "cualquiera",
+      "tipo": "problema",
+      "texto": "Pero Meta se la enseña a cualquiera, y pagas por likes de gente que nunca te va a comprar.",
+      "clave": "likes"
+    },
+    {
+      "id": "elige",
+      "tipo": "solucion",
+      "texto": "Así que le dices a Meta qué quieres de verdad: no likes, sino ventas.",
+      "clave": "sino ventas"
+    },
+    {
+      "id": "objetivo",
+      "tipo": "termino",
+      "texto": "Ese es el objetivo de la campaña.",
+      "termino": "objetivo"
+    },
+    {
+      "id": "perfil",
+      "tipo": "problema",
+      "texto": "Pero el clic lleva a tu perfil, y para comprar tienen que mandarte mensaje y esperar a que contestes.",
+      "clave": "esperar a que contestes"
+    },
+    {
+      "id": "pagina",
+      "tipo": "solucion",
+      "texto": "Entonces haces una página con los lentes, el precio y un botón de comprar.",
+      "clave": "un botón de comprar"
+    },
+    {
+      "id": "producto",
+      "tipo": "termino",
+      "texto": "Esa es la página de producto.",
+      "termino": "página de producto"
+    },
+    {
+      "id": "ciego",
+      "tipo": "problema",
+      "texto": "Pero Meta no ve quién compra en tu página, así que no sabe a quién buscar.",
+      "clave": "a quién buscar"
+    },
+    {
+      "id": "codigo",
+      "tipo": "solucion",
+      "texto": "Así que pones en la página un código que le avisa a Meta cada vez que alguien compra, y Meta busca a más gente como esa.",
+      "clave": "le avisa a Meta"
+    },
+    {
+      "id": "pixel",
+      "tipo": "termino",
+      "texto": "Ese es el píxel.",
+      "termino": "píxel"
+    },
+    {
+      "id": "confianza",
+      "tipo": "problema",
+      "texto": "Pero nadie usa su tarjeta en una tienda que no conoce.",
+      "clave": "una tienda que no conoce"
+    },
+    {
+      "id": "resenas",
+      "tipo": "solucion",
+      "texto": "Por eso pones fotos de clientes usando los lentes, sus opiniones y una garantía de devolución.",
+      "clave": "una garantía"
+    },
+    {
+      "id": "prueba",
+      "tipo": "termino",
+      "texto": "Esa es la prueba social.",
+      "termino": "prueba social"
+    },
+    {
+      "id": "cansa",
+      "tipo": "problema",
+      "texto": "Pero con un solo anuncio, la gente lo ve una y otra vez, y deja de funcionar.",
+      "clave": "deja de funcionar"
+    },
+    {
+      "id": "varios",
+      "tipo": "solucion",
+      "texto": "Entonces haces varios anuncios distintos: alguien probándoselos, otra idea, otro formato.",
+      "clave": "varios anuncios"
+    },
+    {
+      "id": "creativos",
+      "tipo": "termino",
+      "texto": "Esos son los creativos.",
+      "termino": "creativos"
+    },
+    {
+      "id": "ahorasi",
+      "tipo": "giro",
+      "texto": "Ahora sí te llegan ventas.",
+      "clave": "te llegan ventas"
+    },
+    {
+      "id": "carrito",
+      "tipo": "problema",
+      "texto": "Hasta que ves que muchos agregan los lentes al carrito y nunca pagan.",
+      "clave": "nunca pagan"
+    },
+    {
+      "id": "mensaje",
+      "tipo": "solucion",
+      "texto": "Por eso, una hora después de que dejan su carrito, les mandas un mensaje.",
+      "clave": "su carrito listo"
+    },
+    {
+      "id": "recuperacion",
+      "tipo": "termino",
+      "texto": "Esa es la recuperación de carrito.",
+      "termino": "recuperación de carrito"
+    },
+    {
+      "id": "sevan",
+      "tipo": "problema",
+      "texto": "Pero muchos ven los lentes, no los agregan y se van.",
+      "clave": "se van"
+    },
+    {
+      "id": "otravez",
+      "tipo": "solucion",
+      "texto": "Entonces les enseñas otro anuncio solo a ellos, con los mismos lentes que vieron.",
+      "clave": "solo a ellos"
+    },
+    {
+      "id": "remarketing",
+      "tipo": "termino",
+      "texto": "Ese es el remarketing.",
+      "termino": "remarketing"
+    },
+    {
+      "id": "despues",
+      "tipo": "problema",
+      "texto": "Pero aun así, muchos lo dejan para después, y después nunca llega.",
+      "clave": "nunca llega"
+    },
+    {
+      "id": "hoy",
+      "tipo": "solucion",
+      "texto": "Así que les das una razón para comprar hoy: envío gratis solo este fin de semana.",
+      "clave": "envío gratis"
+    },
+    {
+      "id": "oferta",
+      "tipo": "termino",
+      "texto": "Esa es la oferta.",
+      "termino": "oferta"
+    },
+    {
+      "id": "cta",
+      "tipo": "cta",
+      "texto": "Si quieres aprender a hacer todo esto utilizando inteligencia artificial, comenta la palabra: Embudo.",
+      "clave": "comenta la palabra: Embudo"
+    }
+  ],
+  "cola": 3.6
+}

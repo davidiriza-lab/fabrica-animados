@@ -1,0 +1,15 @@
+node_modules/
+.DS_Store
+__pycache__/
+# por video: lo que se genera (se rehace con los scripts)
+videos/*/motor/
+videos/*/renders/
+videos/*/fotos/
+videos/*/vigia/
+videos/*/index.html
+videos/*/hyperframes.json
+videos/*/meta.json
+videos/*/.hyperframes/
+videos/*/audio/narracion.wav
+videos/*/audio/texto.txt
+revision.json

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>__TITULO__</title>
+    <script src="motor/vendor/gsap.min.js"></script>
+    <link rel="stylesheet" href="motor/ui.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #eef2f8; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+      #escenario, #textos { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="__DURACION__" data-width="1080" data-height="1920">
+      <div id="escenario" class="clip" data-start="0" data-duration="__DURACION__" data-track-index="0">
+        <div id="fondo"><div class="reticula"></div>
+          <div class="luz" style="width:900px;height:900px;left:-380px;top:420px;--c:#93b4ff"></div>
+          <div class="luz" style="width:860px;height:860px;right:-380px;top:1050px;--c:#c4b5fd"></div></div>
+        <div id="mesa"><svg id="trazos"></svg></div>
+        <div id="franja"></div>
+      </div>
+      <div id="textos" class="clip" data-start="0" data-duration="__DURACION__" data-track-index="1"></div>
+      <audio id="narracion" src="audio/narracion.wav" data-start="0" data-duration="__DURACION__" data-track-index="5" data-volume="1"></audio>
+      __MUSICA__
+      __SFX__
+    </div>
+
+    <script>
+      window.T = __TIMING__;
+      window.PLAN = __PLAN__;
+      document.body.classList.add("tema-" + (window.PLAN.tema || "claro"));
+      window.__timelines = window.__timelines || {};
+      window.tl = gsap.timeline({ paused: true });
+      window.tl.set({}, {}, window.T.duracion);
+      window.__timelines["main"] = window.tl;
+    </script>
+    <script src="motor/textos.js"></script>
+    <script src="motor/ui.js"></script>
+    <script src="motor/piezas.js"></script>
+    <script type="module">
+      import construir from "./escena.js";
+      const T = window.T, PLAN = window.PLAN;
+      const norm = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9ñ%]/g, "");
+      const idx = (b) => (typeof b === "number" ? b : PLAN.beats.findIndex((x) => x.id === b));
+      const V = {
+        dur: T.duracion,
+        beat(b) { const i = idx(b), ps = T.palabras.filter((p) => p.beat === i); return ps.length ? { ini: ps[0].ini, fin: ps[ps.length - 1].fin } : { ini: 0, fin: 0 }; },
+        dice(b, palabra, respaldo = 0.4) {
+          const i = idx(b); let n = 0, w = palabra;
+          if (w.includes("#")) { [w, n] = w.split("#"); n = Number(n) - 1; }
+          const pref = w.endsWith("*"), k = norm(w.replace("*", "")); let c = 0;
+          for (const p of T.palabras) { if (p.beat !== i) continue; const x = norm(p.w); if (pref ? x.startsWith(k) : x === k) { if (c === n) return p.ini; c++; } }
+          const r = V.beat(b); console.warn(`[escena] no encontré "${palabra}" en el beat ${b}; uso respaldo`); return r.ini + (r.fin - r.ini) * respaldo;
+        },
+      };
+      window.__V = V;
+      try {
+        await document.fonts.ready;
+        construir(window.U, V, PLAN);
+        window.U.preparar();
+        window.tl.seek(0);
+        window.__M = window.U;
+      } catch (e) { window.__errorEscena = e; console.error(e); throw e; }
+    </script>
+  </body>
+</html>

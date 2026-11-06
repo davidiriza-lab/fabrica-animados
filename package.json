@@ -1,0 +1,8 @@
+{
+  "name": "fabrica-animados",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Videos explicativos animados 9:16, problema por problema, hechos con código y Claude Code",
+  "license": "MIT",
+  "type": "commonjs"
+}

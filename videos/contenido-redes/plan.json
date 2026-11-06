@@ -1,0 +1,154 @@
+{
+  "beats": [
+    {
+      "id": "base",
+      "tipo": "base",
+      "texto": "Si grabas tu pastel con el celular y lo subes, ya tienes contenido.",
+      "clave": "contenido"
+    },
+    {
+      "id": "pasan",
+      "tipo": "problema",
+      "texto": "Pero la gente lo pasa de largo en el primer segundo.",
+      "clave": "en el primer segundo"
+    },
+    {
+      "id": "detiene",
+      "tipo": "solucion",
+      "texto": "Así que arrancas con algo que los detenga: el pastel partiéndose a la mitad, o una pregunta.",
+      "clave": "algo que los detenga"
+    },
+    {
+      "id": "gancho",
+      "tipo": "termino",
+      "texto": "Ese es el gancho.",
+      "termino": "gancho"
+    },
+    {
+      "id": "tres",
+      "tipo": "problema",
+      "texto": "Pero se quedan tres segundos y se van, porque no pasa nada después.",
+      "clave": "no pasa nada"
+    },
+    {
+      "id": "historia",
+      "tipo": "solucion",
+      "texto": "Entonces lo cuentas como historia: qué salió mal, qué cambiaste y cómo quedó.",
+      "clave": "como historia"
+    },
+    {
+      "id": "estructura",
+      "tipo": "termino",
+      "texto": "Esa es la estructura.",
+      "termino": "estructura"
+    },
+    {
+      "id": "sonido",
+      "tipo": "problema",
+      "texto": "Pero la mitad lo ve sin sonido, y no entiende nada.",
+      "clave": "sin sonido"
+    },
+    {
+      "id": "texto",
+      "tipo": "solucion",
+      "texto": "Por eso pones el texto de lo que dices en pantalla.",
+      "clave": "el texto"
+    },
+    {
+      "id": "subtitulos",
+      "tipo": "termino",
+      "texto": "Esos son los subtítulos.",
+      "termino": "subtítulos"
+    },
+    {
+      "id": "olvidan",
+      "tipo": "problema",
+      "texto": "Pero subes un día sí y diez no, y se olvidan de ti.",
+      "clave": "se olvidan de ti"
+    },
+    {
+      "id": "domingo",
+      "tipo": "solucion",
+      "texto": "Así que decides desde el domingo qué vas a subir cada día de la semana.",
+      "clave": "desde el domingo"
+    },
+    {
+      "id": "calendario",
+      "tipo": "termino",
+      "texto": "Ese es el calendario de contenido.",
+      "termino": "calendario de contenido"
+    },
+    {
+      "id": "ideas",
+      "tipo": "problema",
+      "texto": "Pero a la tercera semana ya no sabes qué grabar.",
+      "clave": "qué grabar"
+    },
+    {
+      "id": "temas",
+      "tipo": "solucion",
+      "texto": "Entonces eliges tres temas que siempre se repiten: enseñar una receta, mostrar tu cocina y presumir pedidos.",
+      "clave": "tres temas"
+    },
+    {
+      "id": "pilares",
+      "tipo": "termino",
+      "texto": "Esos son los pilares de contenido.",
+      "termino": "pilares de contenido"
+    },
+    {
+      "id": "ahorasi",
+      "tipo": "giro",
+      "texto": "Ahora sí te ven.",
+      "clave": "te ven"
+    },
+    {
+      "id": "nadie",
+      "tipo": "problema",
+      "texto": "Hasta que te das cuenta de que te siguen, pero nadie te pide un pastel.",
+      "clave": "nadie te pide"
+    },
+    {
+      "id": "dile",
+      "tipo": "solucion",
+      "texto": "Por eso al final de cada video les dices qué hacer: mándame mensaje y aparta el tuyo.",
+      "clave": "qué hacer"
+    },
+    {
+      "id": "cta",
+      "tipo": "termino",
+      "texto": "Ese es el llamado a la acción.",
+      "termino": "llamado a la acción"
+    },
+    {
+      "id": "funciono",
+      "tipo": "problema",
+      "texto": "Pero no sabes qué videos sí funcionaron y cuáles no.",
+      "clave": "cuáles no"
+    },
+    {
+      "id": "revisas",
+      "tipo": "solucion",
+      "texto": "Así que cada semana revisas cuáles se vieron completos y cuáles se guardaron, y haces más de esos.",
+      "clave": "haces más de esos"
+    },
+    {
+      "id": "metricas",
+      "tipo": "termino",
+      "texto": "Esas son las métricas.",
+      "termino": "métricas"
+    },
+    {
+      "id": "cta-final",
+      "tipo": "cta",
+      "texto": "Si quieres aprender a hacer todo esto utilizando inteligencia artificial, comenta la palabra: Contenido.",
+      "clave": "comenta la palabra: Contenido"
+    }
+  ],
+  "voz": {},
+  "marca": "",
+  "titulo": "Cómo crear contenido para redes sociales",
+  "estilo": "motion",
+  "tema": "noche",
+  "cola": 3.6
+}
