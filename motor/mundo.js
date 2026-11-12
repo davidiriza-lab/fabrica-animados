@@ -17,7 +17,8 @@ import * as THREE from "three";
 import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
 import { LineMaterial } from "three/addons/lines/LineMaterial.js";
-import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
+import { mergeVertices, mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
 const ANCHO = 1080, ALTO = 1920;
 
@@ -125,6 +126,9 @@ export function crearMundo(cfg = {}) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = estilo === "maqueta" ? THREE.NeutralToneMapping : THREE.NoToneMapping;
   const es2D = estilo === "plano" || estilo === "pizarra";   // vista lateral fija, cámara ortográfica
+  // ACABADO "rico" (toon, por defecto): sombras marcadas y frías, luz de borde y brillo de pintura.
+  // PLAN.mundo.acabado = "simple" regresa al toon plano de antes.
+  const rico = estilo === "toon" && (cfg.acabado ?? "rico") !== "simple";
   renderer.shadowMap.enabled = !es2D && cfg.sombras !== false;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -174,13 +178,50 @@ export function crearMundo(cfg = {}) {
     for (const [x, y] of [[-8, 12.5], [2, 15], [-2, 10.5]]) { disco(1.1, "#ffffff", x, y); disco(0.85, "#ffffff", x + 1.2, y + 0.3); disco(0.8, "#ffffff", x - 1.1, y + 0.1); disco(0.7, "#ffffff", x + 0.3, y + 0.75); }
   } else {
     escena.background = degradado(P.cieloArriba, P.cieloAbajo);
+    // PROFUNDIDAD (toon): niebla hacia el color del horizonte, piso infinito, cerros y sol al fondo.
+    // Va fuera de la raíz: la cámara y el revisor no lo cuentan. Se apaga con PLAN.mundo.fondo = false.
+    if (cfg.fondo !== false) {
+      escena.fog = new THREE.Fog(new THREE.Color(P.cieloAbajo), cfg.nieblaCerca ?? 42, cfg.nieblaLejos ?? 175);
+      const lejos = new THREE.Group(); lejos.name = "fondo"; escena.add(lejos);
+      const piso = new THREE.Mesh(new THREE.CircleGeometry(400, 64), new THREE.MeshToonMaterial({ color: new THREE.Color(cfg.colorPisoLejos || "#8fd35a"), gradientMap: rampaToon([200, 255]) }));
+      piso.rotation.x = -Math.PI / 2; piso.position.y = -0.06; piso.receiveShadow = true; lejos.add(piso);
+      const rnd = azar(cfg.semillaFondo || 11);
+      const cerro = (r, h, x, z, color) => {
+        const m = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 14), new THREE.MeshToonMaterial({ color: new THREE.Color(color), gradientMap: rampaToon([175, 225, 255]) }));
+        m.scale.set(r, h, r * (0.7 + rnd() * 0.5)); m.position.set(x, -h * 0.25, z); lejos.add(m);
+      };
+      const verdes = ["#76c457", "#68b84f", "#86cf62", "#5faa4a"];
+      for (let i = 0; i < 16; i++) { const a = (i / 16) * Math.PI * 2 + rnd() * 0.3, R = 85 + rnd() * 30; cerro(22 + rnd() * 18, 9 + rnd() * 9, Math.sin(a) * R, -Math.cos(a) * R, verdes[i % 4]); }
+      for (let i = 0; i < 10; i++) { const a = (i / 10) * Math.PI * 2 + rnd(), R = 150 + rnd() * 25; cerro(40 + rnd() * 20, 24 + rnd() * 14, Math.sin(a) * R, -Math.cos(a) * R, "#8fb9b2"); }
+      if (rico) {   // fila de arbolitos lejanos entre la obra y los cerros: el horizonte deja de ser liso
+        const nA = 140, copa = new THREE.InstancedMesh(new THREE.SphereGeometry(1, 14, 8), new THREE.MeshToonMaterial({ gradientMap: rampaToon([170, 225, 255]) }), nA);
+        const q = new THREE.Object3D(), cc = new THREE.Color();
+        for (let i = 0; i < nA; i++) {
+          const a = rnd() * Math.PI * 2, R = 52 + rnd() * 30, r = 1.6 + rnd() * 1.8;
+          q.position.set(Math.sin(a) * R, r * 0.95, -Math.cos(a) * R); q.scale.set(r, r * (1.05 + rnd() * 0.35), r); q.updateMatrix();
+          copa.setMatrixAt(i, q.matrix); copa.setColorAt(i, cc.set(["#4f9a3c", "#5aa846", "#468a35", "#63b04e"][i % 4]));
+        }
+        copa.receiveShadow = false; lejos.add(copa);
+        // nubes lejanas planas cerca del horizonte: el cielo de 9:16 deja de ser un muro azul
+        const mNube = new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0.8, fog: false, depthWrite: false });
+        for (let i = 0; i < 14; i++) {
+          const a = (i / 14) * Math.PI * 2 + rnd() * 0.4, R = 230, y = 38 + rnd() * 34, nube = new THREE.Group();
+          for (let j = 0; j < 4; j++) { const e = new THREE.Mesh(new THREE.CircleGeometry(1, 32), mNube); e.scale.set(10 + rnd() * 9, 4 + rnd() * 3, 1); e.position.set((j - 1.5) * 9 + rnd() * 4, rnd() * 3 - (j % 3 === 0 ? 1.5 : 0), j * 0.1); nube.add(e); }
+          nube.position.set(Math.sin(a) * R, y, -Math.cos(a) * R); nube.lookAt(0, y, 0); lejos.add(nube);
+        }
+      }
+      const disco = new THREE.Mesh(new THREE.CircleGeometry(7, 48), new THREE.MeshBasicMaterial({ color: "#fff6c8", fog: false }));
+      disco.position.set(...(cfg.posSol || [70, 62, -150])); disco.lookAt(0, 0, 0); lejos.add(disco);
+      const aura = new THREE.Mesh(new THREE.CircleGeometry(13, 48), new THREE.MeshBasicMaterial({ color: "#fffbe0", transparent: true, opacity: 0.35, fog: false }));
+      aura.position.copy(disco.position).multiplyScalar(1.01); aura.lookAt(0, 0, 0); lejos.add(aura);
+    }
   }
 
   // ---------- luces
   const sol = new THREE.DirectionalLight(0xffffff, estilo === "maqueta" ? 2.6 : 2.2);
-  sol.position.set(...(cfg.sol || [8, 14, 6]));
+  sol.position.set(...(cfg.sol || (rico ? [14, 10, 5] : [8, 14, 6])));   // rico: sol de lado y más bajo → sombras largas que se ven de frente
   sol.castShadow = renderer.shadowMap.enabled;
-  const ts = cfg.tamSombra || 18;
+  const ts = cfg.tamSombra || (rico ? 24 : 18);
   Object.assign(sol.shadow.camera, { left: -ts, right: ts, top: ts, bottom: -ts, near: 0.5, far: 80 });
   sol.shadow.mapSize.set(2048, 2048);
   sol.shadow.bias = -0.0006;
@@ -188,20 +229,28 @@ export function crearMundo(cfg = {}) {
   escena.add(sol); escena.add(sol.target);   // en plano no proyecta sombra, pero da el lado claro y el oscuro
   const ambiente = new THREE.HemisphereLight(0xffffff, estilo === "maqueta" ? 0x7a6a5a : 0xb8c4d0, estilo === "maqueta" ? 1.1 : 1.5);
   escena.add(ambiente);
+  if (estilo === "toon" && cfg.contraluz !== false) {   // luz de contra fría: separa las piezas del fondo (2 tonos de luz)
+    const contra = new THREE.DirectionalLight(0xc9dcff, 0.7); contra.position.set(-9, 7, -12); escena.add(contra);
+    ambiente.color.set("#fff4e2"); ambiente.groundColor.set("#9fb0c0");
+  }
+  if (rico) {   // sol cálido que manda + ambiente frío más bajo: la sombra se ve y es azulada, no gris
+    sol.color.set("#fff1d8"); sol.intensity = 2.75; sol.shadow.mapSize.set(4096, 4096);
+    ambiente.color.set("#dbe6ff"); ambiente.groundColor.set("#a88f78"); ambiente.intensity = 1.22;
+  }
   if (estilo === "plano") { ambiente.intensity = 1.9; sol.intensity = 1.6; }
   if (estilo === "maqueta") { sol.shadow.mapSize.set(4096, 4096); sol.intensity = 3.0; ambiente.intensity = 1.25; ambiente.color.set("#dfeaff"); ambiente.groundColor.set("#8a6a4a"); }
 
   // ---------- materiales (cacheados por color)
-  const rampa = rampaToon([150, 205, 255]);
+  const rampa = rico ? rampaToon([128, 196, 255]) : rampaToon([150, 205, 255]);   // rico: cada cara con su tono
   const rampaPlana = rampaToon([196, 255]);
   const cacheMat = new Map();
   function mat(color, o = {}) {
-    const clave = `${color}|${["opacidad", "dobleCara", "brilla", "rugosidad", "metal", "facetado", "vidrio", "capa"].map((k) => o[k]).join("|")}`;
+    const clave = `${color}|${["opacidad", "dobleCara", "brilla", "rugosidad", "metal", "facetado", "vidrio", "capa", "lustre"].map((k) => o[k]).join("|")}`;
     if (cacheMat.has(clave) && !o.unico) return cacheMat.get(clave);
     let m;
     const comun = { color: new THREE.Color(color), transparent: o.opacidad !== undefined, opacity: o.opacidad ?? 1, side: o.dobleCara ? THREE.DoubleSide : THREE.FrontSide };
     if (o.brilla) m = new THREE.MeshBasicMaterial({ ...comun, toneMapped: false });
-    else if (estilo === "toon") m = new THREE.MeshToonMaterial({ ...comun, gradientMap: rampa });
+    else if (estilo === "toon") { m = new THREE.MeshToonMaterial({ ...comun, gradientMap: rampa }); if (rico && !o.vidrio) acabadoRico(m, o); }
     else if (estilo === "maqueta") m = new THREE.MeshStandardMaterial({ ...comun, roughness: o.rugosidad ?? 0.85, metalness: o.metal ?? 0, flatShading: o.facetado ?? false });
     else m = new THREE.MeshBasicMaterial(comun);   // plano y pizarra: color plano, sin sombreado (ilustración 2D)
     if (o.vidrio) { m.transparent = true; m.opacity = o.opacidad ?? 0.35; m.depthWrite = false; }
@@ -210,6 +259,30 @@ export function crearMundo(cfg = {}) {
     return m;
   }
   const col = (c) => (c && P[c]) || c || P.gris;
+  // Luz de borde (orilla iluminada del lado del sol) + brillo duro de pintura en lo redondeado. Nada en caras que miran arriba
+  // (piso, techos): ahí se vería como mancha.
+  function acabadoRico(m, o = {}) {
+    const borde = o.borde ?? 0.38, brillo = o.lustre ?? 0;   // lustre: brillo de pintura (cajaR lo trae; árboles y gente no)
+    m.onBeforeCompile = (sh) => {
+      sh.uniforms.uBorde = { value: borde }; sh.uniforms.uBrillo = { value: brillo };
+      sh.fragmentShader = sh.fragmentShader.replace("#include <common>", "#include <common>\nuniform float uBorde; uniform float uBrillo;").replace("#include <opaque_fragment>", `
+        #if NUM_DIR_LIGHTS > 0
+        {
+          vec3 vd = normalize(vViewPosition); vec3 nn = normalize(normal);
+          vec3 arriba = normalize((viewMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
+          float lateral = 1.0 - smoothstep(0.55, 0.9, dot(nn, arriba));
+          vec3 L = directionalLights[0].direction;
+          float fr = 1.0 - max(dot(nn, vd), 0.0);
+          float rim = smoothstep(0.56, 0.62, fr) * smoothstep(-0.05, 0.3, dot(nn, L)) * lateral;
+          outgoingLight += diffuseColor.rgb * rim * uBorde;
+          float br = smoothstep(0.955, 0.972, dot(nn, normalize(L + vd))) * lateral;
+          outgoingLight += vec3(br * uBrillo);
+        }
+        #endif
+        #include <opaque_fragment>`);
+    };
+    m.customProgramCacheKey = () => `rico${borde}|${brillo}`;
+  }
 
   // ---------- contornos de tinta (solo estilo toon, o si se pide)
   const grosorTinta = cfg.grosorTinta ?? (estilo === "plano" ? 2.6 : estilo === "pizarra" ? 5 : 4.2);   // pizarra: trazo de plumón
@@ -355,6 +428,13 @@ export function crearMundo(cfg = {}) {
     const g = new THREE.CylinderGeometry(rArr, rAb, al, o.lados || 28, 1, o.abierto || false);
     if (o.base !== false) g.translate(0, al / 2, 0);
     return malla(g, color, { angulo: 50, ...o });
+  };
+  // Caja con esquinas redondeadas (r = radio): se ve "fabricada", no de bloques. Solo silueta de tinta, sin aristas.
+  const cajaR = (an, al, pr, color, o = {}) => {
+    const r = Math.min(o.radio ?? 0.05, an / 2 - 1e-3, al / 2 - 1e-3, pr / 2 - 1e-3);
+    const g = new RoundedBoxGeometry(an, al, pr, 3, r);
+    if (o.base !== false) g.translate(0, al / 2, 0);
+    return malla(g, color, { aristas: false, lustre: 0.22, ...o });
   };
   const esfera = (r, color, o = {}) => malla(new THREE.SphereGeometry(r, o.lados || 28, Math.max(8, (o.lados || 28) / 2)), color, { aristas: false, ...o });
   const cono = (r, al, color, o = {}) => { const g = new THREE.ConeGeometry(r, al, o.lados || 24); if (o.base !== false) g.translate(0, al / 2, 0); return malla(g, color, { angulo: 50, ...o }); };
@@ -1473,7 +1553,7 @@ export function crearMundo(cfg = {}) {
 
   return {
     THREE, E, P, estilo, escena, camara: cam, camara3: camara, renderer, raiz, sol, ambiente,
-    mat, col, texturaManchas, entintar, colocar, malla, caja, cilindro, esfera, cono, toro, plano, extruir, tornear, tubo, tuberia, tuberiaViva, punto, puerto, conectar, montar, fraccionEn, sobre, recargar, altoDe, zona, grupo, agregar, letrero, brillo, luz,
+    mat, col, texturaManchas, unirGeometrias: mergeGeometries, entintar, colocar, malla, caja, cajaR, cilindro, esfera, cono, toro, plano, extruir, tornear, tubo, tuberia, tuberiaViva, punto, puerto, conectar, montar, fraccionEn, sobre, recargar, altoDe, zona, grupo, agregar, letrero, brillo, luz,
     mover: (obj, t, destino, ...r) => { if (destino.causa) obj.userData.causa = destino.causa; else obj.userData.movidaPorEscena = true; return mover(obj, t, destino, ...r); }, efecto: efectoLibre, aparecer, desaparecer, ensamblar, sacudir, latir, girar, oscilar, pista, alerta, teñir, flujo, trazo, lluvia, flecha,
     texturaReal, cadaCuadro: (fn) => porCuadro.push(fn), alFinal: (fn) => pendientesVivas.push(fn), render, actualizar, prepararTomas, revisar, azar, prog,
   };

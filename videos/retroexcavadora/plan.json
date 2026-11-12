@@ -1,0 +1,108 @@
+{
+  "titulo": "La retroexcavadora",
+  "estilo": "toon",
+  "textos": {
+    "modo": "completo"
+  },
+  "gancho_post": "Esas dos patas que una retroexcavadora baja antes de escarbar NO están de adorno 🚜",
+  "copy": "Esas dos patas que una retroexcavadora baja antes de escarbar NO están de adorno 🚜\n\nArmamos una retroexcavadora desde cero, problema por problema: brazo excavador, cilindro hidráulico, estabilizadores y cargador frontal.\n\n¿Cuál pieza no sabías para qué servía? 👇\n\n📚 Fuentes\n• JCB 3CX, hoja técnica: válvula de alivio principal a 251 bar\n• Caterpillar 420: presión del sistema hidráulico de 3,626 psi (≈250 bar)\n• Presión recomendada de una llanta de auto: ~32 psi (≈2.2 bar)\n\n#retroexcavadora #maquinaria #comofunciona #ingenieria #hidraulica #construccion",
+  "voz": {},
+  "marca": "",
+  "beats": [
+    {
+      "id": "base",
+      "tipo": "base",
+      "texto": "Si a un tractor le amarras una pala atrás, ya tienes una retroexcavadora.",
+      "clave": "una retroexcavadora"
+    },
+    {
+      "id": "fija",
+      "tipo": "problema",
+      "texto": "Pero la pala está fija y nomás raya el piso.",
+      "clave": "nomás raya el piso"
+    },
+    {
+      "id": "brazo",
+      "tipo": "solucion",
+      "texto": "Así que le pones un brazo de dos tramos que se dobla como tu hombro y tu codo, con un bote de dientes en la punta.",
+      "clave": "como tu hombro y tu codo"
+    },
+    {
+      "id": "brazoT",
+      "tipo": "termino",
+      "texto": "Ese es el brazo excavador.",
+      "termino": "brazo excavador"
+    },
+    {
+      "id": "pesado",
+      "tipo": "problema",
+      "texto": "Pero con el bote lleno de tierra, el brazo pesa como un carro y no hay quien lo levante.",
+      "clave": "pesa como un carro"
+    },
+    {
+      "id": "piston",
+      "tipo": "solucion",
+      "texto": "Entonces le pones un tubo con un pistón adentro: una bomba le mete aceite a presión y el pistón sale empujando el brazo.",
+      "clave": "aceite a presión"
+    },
+    {
+      "id": "presion",
+      "tipo": "dato",
+      "texto": "Ese aceite va a más de cien veces la presión de la llanta de tu carro.",
+      "clave": "más de cien veces",
+      "dato": {
+        "numero": "+100×",
+        "texto": "la presión de una llanta",
+        "palabra": "cien"
+      }
+    },
+    {
+      "id": "cilindro",
+      "tipo": "termino",
+      "texto": "Ese es el cilindro hidráulico.",
+      "termino": "cilindro hidráulico"
+    },
+    {
+      "id": "ahorasi",
+      "tipo": "giro",
+      "texto": "Ahora sí escarbas como si nada.",
+      "clave": "como si nada"
+    },
+    {
+      "id": "dura",
+      "tipo": "problema",
+      "texto": "Hasta que muerdes tierra dura y, en vez de que entre el bote, se levanta la máquina.",
+      "clave": "se levanta la máquina"
+    },
+    {
+      "id": "patas",
+      "tipo": "solucion",
+      "texto": "Así que le pones dos patas que bajan al piso y levantan las llantas, como cuando abres las piernas para cargar algo pesado.",
+      "clave": "dos patas"
+    },
+    {
+      "id": "estab",
+      "tipo": "termino",
+      "texto": "Esos son los estabilizadores.",
+      "termino": "estabilizadores"
+    },
+    {
+      "id": "monton",
+      "tipo": "problema",
+      "texto": "Pero la tierra se queda amontonada junto al hoyo.",
+      "clave": "amontonada"
+    },
+    {
+      "id": "pala",
+      "tipo": "solucion",
+      "texto": "Entonces adelante le pones una pala ancha que la levanta y la echa al camión de volteo.",
+      "clave": "una pala ancha"
+    },
+    {
+      "id": "cargador",
+      "tipo": "termino",
+      "texto": "Ese es el cargador frontal.",
+      "termino": "cargador frontal"
+    }
+  ]
+}

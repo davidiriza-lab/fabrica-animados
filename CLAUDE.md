@@ -33,7 +33,7 @@ scripts/limpiar.sh videos/<slug>              # borra lo intermedio
 ```
 Atajo cuando ya están el plan y la escena: `python3 scripts/generar.py videos/<slug>` (se detiene en el vigía; después `--vigia-ok`).
 
-Ejemplos completos para copiar: `videos/tinaco/` (3D), `videos/embudo-meta/` (pizarra), `videos/embudo-lentes/` (motion claro) y `videos/contenido-redes/` (motion noche con fotos). Se hicieron antes de las revisiones más nuevas, así que el revisor todavía les marca algunos detalles (por ejemplo, tramos de voz sin animación). Sirven de referencia, no de techo.
+Ejemplos completos para copiar: `videos/tinaco/` (3D), `videos/retroexcavadora/` (3D con una máquina articulada), `videos/embudo-meta/` (pizarra), `videos/embudo-lentes/` (motion claro) y `videos/contenido-redes/` (motion noche con fotos). Se hicieron antes de las revisiones más nuevas, así que el revisor todavía les marca algunos detalles (por ejemplo, tramos de voz sin animación). Sirven de referencia, no de techo.
 
 ## El vigía
 Antes de cada render, lanza un subagente independiente (herramienta Agent) con el prompt de `guias/VIGIA.md` y las hojas de `videos/<slug>/vigia/`. No le pases tu opinión de la escena: tiene que mirar con ojos frescos. Corrige lo que encuentre y repite hasta que no haya nada grave.

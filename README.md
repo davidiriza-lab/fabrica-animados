@@ -8,13 +8,14 @@ La guía paso a paso está en el Lab: **[Videos animados con Claude](https://www
 
 ## Cómo se ven
 
-Los seis videos de ejemplo vienen en [Releases](../../releases) (MP4 listos para ver) y su código está en `videos/`:
+Los siete videos de ejemplo vienen en [Releases](../../releases) (MP4 listos para ver) y su código está en `videos/`:
 
 | Video | Estilo | Qué muestra |
 |---|---|---|
 | `videos/tinaco` | 3D `toon` (caricatura con contorno de tinta) | cómo funciona el tinaco de tu casa |
 | `videos/tinaco-maqueta` | 3D `maqueta` (diorama en corte) | el mismo guion en otro estilo |
 | `videos/tinaco-plano` | 3D `plano` (ilustración isométrica) | el mismo guion en otro estilo |
+| `videos/retroexcavadora` | 3D `toon` con maquinaria que se mueve por poses | cómo funciona una retroexcavadora |
 | `videos/embudo-meta` | `pizarra` (2D dibujado con plumón) | un embudo de venta en Meta |
 | `videos/embudo-lentes` | `motion` claro (pantallas web realistas) | un embudo para vender unos lentes |
 | `videos/contenido-redes` | `motion` noche, con fotos | cómo crear contenido para redes |

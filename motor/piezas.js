@@ -8,6 +8,7 @@
 //  Así la escena se arma por RELACIONES (sobre, conectar, montar) y no con coordenadas sueltas.
 //  Uso en escena.js:   const { casa, tinaco, regadera } = M.piezas;
 // =====================================================================================
+import { instalarObra } from "./piezas-obra.js";
 export function instalarPiezas(M) {
   const { THREE, E, caja, cilindro, esfera, tornear, extruir, plano, grupo, luz, letrero, lluvia,
           aparecer, desaparecer, ensamblar, mover, efecto, pista, alFinal, tuberiaViva, puerto, prog } = M;
@@ -307,20 +308,50 @@ export function instalarPiezas(M) {
     return g;
   };
 
-  // ------------------------------------------------------------------ PERSONA (formas primitivas)
-  // Cuerpo = una forma (trapecio), cabeza = círculo con gorro de pelo, brazos y piernas = líneas. Origen en los pies.
+  // ------------------------------------------------------------------ PERSONA (formas primitivas con volumen)
+  // Zapatos, pantalón, torso redondeado, brazos con manos, cabeza con ojos, nariz y pelo. Mira hacia +z. Origen en los pies.
+  // Los hijos "pierna" (pie + pierna) giran desde el piso, igual que antes. o.chaleco = color de chaleco de obra con reflejantes.
+  // o.sentada = muslos al frente (la cadera apoya en y = 0.74). o.brazosAlFrente = grados (volante, cargar). .brazos = [izq, der]:
+  // para animarlos, gira brazo.rotation.x (negativo = hacia el frente).
   // Es un AGENTE: puede moverse y lo que carga (hijo de .mano) se mueve con ella sin que el revisor proteste.
   P.persona = (o = {}) => {
     const g = grupo({ nombre: o.nombre || "persona" });
     g.userData.agente = true;
-    const c = o.color || "naranja", piel = o.piel || "#f1c6a6", linea = o.linea || "negro";
-    cilindro(0.025, 0.025, 0.8, linea, { padre: g, pos: [-0.1, 0, 0], tinta: false, nombre: "pierna" });
-    cilindro(0.025, 0.025, 0.8, linea, { padre: g, pos: [0.1, 0, 0], tinta: false, nombre: "pierna" });
-    cilindro(0.18, 0.3, 0.75, c, { padre: g, pos: [0, 0.78, 0], lados: 4, rot: [0, 45, 0], nombre: "cuerpo" });
-    esfera(0.17, piel, { padre: g, pos: [0, 1.75, 0], nombre: "cabeza" });
-    esfera(0.18, o.pelo || "#2b211c", { padre: g, pos: [0, 1.82, -0.03], escala: [1, 0.6, 1], nombre: "pelo" });
-    cilindro(0.022, 0.022, 0.55, linea, { padre: g, pos: [0.3, 1.0, 0], rot: [0, 0, -20], tinta: false, nombre: "brazo" });
-    cilindro(0.022, 0.022, 0.55, linea, { padre: g, pos: [-0.3, 1.0, 0], rot: [0, 0, 20], tinta: false, nombre: "brazo" });
+    const c = o.color || "naranja", piel = o.piel || "#f1c6a6", pant = o.pantalon || "#34507a", zap = o.zapato || "#3a2a20";
+    for (const sx of [-1, 1]) {
+      if (o.sentada) {   // sentada: muslo hacia el frente desde la cadera, espinilla hacia abajo (la cadera queda en y = 0.74)
+        const mu = grupo({ padre: g, pos: [sx * 0.1, 0.8, -0.02], rot: [90, 0, 0], nombre: "muslo" });
+        cilindro(0.074, 0.068, 0.46, pant, { padre: mu, lados: 14, nombre: "muslo" });
+        const ro = grupo({ padre: mu, pos: [0, 0.44, 0], rot: [-90, 0, 0], nombre: "rodilla" });
+        esfera(0.07, pant, { padre: ro, nombre: "rodilla" });
+        cilindro(0.064, 0.06, 0.5, pant, { padre: ro, pos: [0, -0.5, 0], lados: 14, nombre: "espinilla" });
+        M.cajaR(0.14, 0.1, 0.27, zap, { padre: ro, pos: [0, -0.58, 0.035], radio: 0.045, nombre: "zapato" });
+        continue;
+      }
+      const pi = grupo({ padre: g, pos: [sx * 0.1, 0, 0], nombre: "pierna" });
+      M.cajaR(0.14, 0.1, 0.27, zap, { padre: pi, pos: [0, 0, 0.035], radio: 0.045, nombre: "zapato" });
+      cilindro(0.068, 0.062, 0.8, pant, { padre: pi, pos: [0, 0.07, 0], lados: 14, nombre: "pierna" });
+    }
+    M.cajaR(0.36, 0.2, 0.22, pant, { padre: g, pos: [0, 0.74, 0], radio: 0.07, nombre: "cadera" });
+    M.cajaR(0.42, 0.6, 0.25, c, { padre: g, pos: [0, 0.86, 0], radio: 0.1, nombre: "cuerpo" });
+    if (o.chaleco) {
+      M.cajaR(0.445, 0.4, 0.27, o.chaleco, { padre: g, pos: [0, 0.98, 0], radio: 0.1, nombre: "chaleco" });
+      for (const y of [1.06, 1.22]) cilindro(0.226, 0.226, 0.035, "#e9eef2", { padre: g, pos: [0, y, 0], escala: [1, 1, 0.66], lados: 24, base: false, aristas: false, nombre: "reflejante" });
+    }
+    cilindro(0.06, 0.07, 0.14, piel, { padre: g, pos: [0, 1.42, 0], lados: 14, aristas: false, nombre: "cuello" });
+    esfera(0.18, piel, { padre: g, pos: [0, 1.66, 0], escala: [1, 1.04, 1], nombre: "cabeza" });
+    esfera(0.188, o.pelo || "#2b211c", { padre: g, pos: [0, 1.73, -0.035], escala: [1, 0.62, 1], nombre: "pelo" });
+    for (const sx of [-1, 1]) {
+      esfera(0.024, "#1b1d24", { padre: g, pos: [sx * 0.065, 1.69, 0.162], tinta: false, sombra: false, nombre: "ojo" });
+      esfera(0.008, "#ffffff", { padre: g, pos: [sx * 0.065 + 0.008, 1.698, 0.183], tinta: false, sombra: false, nombre: "brillo del ojo" });
+      esfera(0.04, piel, { padre: g, pos: [sx * 0.178, 1.66, 0], escala: [0.6, 1, 1], nombre: "oreja" });
+      const br = grupo({ padre: g, pos: [sx * 0.24, 1.38, 0], rot: [-(o.brazosAlFrente ?? 0), 0, sx * (o.brazosAlFrente ? 4 : 14)], nombre: "brazo" });
+      (g.brazos ||= []).push(br);
+      cilindro(0.058, 0.052, 0.5, c, { padre: br, pos: [0, -0.5, 0], lados: 14, nombre: "manga" });
+      esfera(0.062, c, { padre: br, pos: [0, 0, 0], nombre: "hombro" });
+      esfera(0.06, piel, { padre: br, pos: [0, -0.55, 0], nombre: "mano" });
+    }
+    esfera(0.032, new THREE.Color(piel).offsetHSL(0, 0.05, -0.08).getStyle(), { padre: g, pos: [0, 1.635, 0.172], tinta: false, nombre: "nariz" });
     g.mano = grupo({ padre: g, pos: [0.42, 0.95, 0], nombre: "mano" });
     // subirPor(escalera, t0, t1, veces): sube y baja con los pies SOBRE los peldaños (del lado de afuera)
     g.subirPor = (esc, t0, t1, veces = 1) => {
@@ -543,6 +574,7 @@ export function instalarPiezas(M) {
   };
   P.pz = pz;
 
+  instalarObra(M, P);   // maquinaria y obra: retroexcavadora, camión de volteo, terreno con zanja (piezas-obra.js)
   M.piezas = P;
   return P;
 }

@@ -31,6 +31,12 @@
 - `casa({pisos})`: en corte, sin muro de enfrente. `.armar(t)`, `.agregarPiso(t)`, `.azotea` (todo lo que va `sobre(casa)` sube con ella) y `.pisos[i]` con `.regadera`, `.azulejo`, `.bano` y `.cuarto` (zonas invisibles de encuadre). Puertos `esquinaDerecha` y `esquinaIzquierda` (abajo y en la azotea).
 - `tinaco()`: puertos `entrada`, `salida`, `jarro` y `fondo`; `.nivel(claves)`, `.flotador(t)` y `.agua`.
 - `jarroDeAire(tin, {t0, dur})`, `regadera()` (puerto `entrada`, `.chorro(t0, t1, "fuerte" | "debil" | "lodo")`), `medidor()`, `bomba()`, `filtro()`, `base({alto})` (`.crecer(t)`), `cota(desde, hasta)`, `arbol()`, `nube()`, `escalera()` y `cubeta()`.
+- **Obra y maquinaria** (`motor/piezas-obra.js`, 7-nov-2026; ejemplo: `videos/retroexcavadora`): `obra({zanja})` (terreno grande con zanja de tierra blanda y tepetate: `.escarbar(claves)`, `.escarbarDura(claves)`, `.zonaZanja`), `monton({pos})` (`.nivel(claves)`), `retroexcavadora({inicio, pose})` y `camionVolteo()` (`.cargar(claves)`, `.rodar(t0, t1, metros)`).
+  - La retro se mueve por **poses con tiempo**: `R.pose(t, {sw, a1, a2, a3, phi, levanta, cl, ct}, dur)` (giro, pluma, balancín, bote, estabilizadores 165→25, ladeo, alza y giro de la pala del cargador) y por rutas `R.manejar(t, dur, [{recto: m}, {vuelta: grados, radio}])`. `R.cargar(t, {bote, pala})` llena o vacía. `R.dondeBote(t)` dice dónde descarga (para la tierra que cae).
+  - Partes para aparecer o encuadrar: `R.giro`, `R.pluma`, `R.balancin`, `R.bote`, `R.dientes`, `R.cilindrosBrazo`, `R.bomba` (puerto `salida`), `R.estabilizadores[i]` (+ `.cil`), `R.cargador`, `R.brazosC`, `R.pala`, `R.cilCargador`, `R.cabina`, `R.cofre`, `R.ruedas`. Lo articulado aparece con `estirar` (crece a lo largo) y los cilindros con `desplegar`.
+  - `cilindroHidraulico(padre, [objA, localA], [objB, localB])`: camisa translúcida con el aceite y el pistón adentro; va de ancla a ancla cada cuadro.
+  - En vertical, una máquina larga vista de lado obliga a la cámara a irse lejísimos: filmar en diagonal (`azimut` ±40–60) o encuadrar partes.
+  - Los letreros que deben mirar a la cámara van en una pieza SIN rotar (o en el mundo): dentro de un grupo girado quedan de espaldas.
 - **¿Falta una pieza?** Se agrega a `motor/piezas.js`, no se improvisa en la escena. Reglas: origen en la base, puertos con dirección, sin caras empalmadas, todo nombrado y su contenido (agua, cartucho) como hijo.
 
 **Cámara por intención:**
@@ -51,10 +57,13 @@
 | `pizarra` | explicadores de plumón (temas no físicos: marketing, procesos) | 2D sobre papel, se DIBUJA (`aparecer(…, {modo: "dibujar"})`), piezas `M.piezas.pz` (celular, página, embudo, contador, flecha…) | `frase` en letra Kalam sobre parche de papel; término con marcatexto. La pizarra se ve siempre de lado a lado y la cámara solo sube y baja (`anchoPizarra`) |
 | `motion` | explicadores de marketing y procesos digitales (diseño B "claro limpio") | **otro motor** (`motor-motion/`: HTML/CSS + GSAP, sin three.js). Diseño claro limpio, piezas web realistas (celular, publicación, Administrador de anuncios, landing, código, WhatsApp, notificaciones, métricas). Recorrido de pizarra: las piezas se suman en un lienzo grande y la cámara viaja | `frase` en Montserrat negra; el término en negativo (fondo negro, letra blanca) |
 
+**Acabado del toon (`PLAN.mundo.acabado`, por defecto `"rico"`):** sol cálido de lado y bajo (sombras largas que se ven de frente), sombreado de 3 bandas marcadas, luz de borde en las orillas del lado del sol, brillo de pintura solo en `cajaR` (opción `lustre`; árboles y gente sin brillo), fila de arbolitos y nubes planas al fondo. `"simple"` regresa al toon plano anterior. Se probó oclusión ambiental (GTAO) y se descartó: borra la tinta y lava los colores en este pipeline.
+**Persona:** tiene volumen (zapatos, pantalón, torso, manos, cara con ojos y nariz). `persona({sentada: true})` para operadores y choferes (la cadera apoya en y = 0.74; girarla para que mire al frente de la máquina), `brazosAlFrente: grados` para volante o cargar; `.brazos` se animan con `rotation.x` negativo. Lo que carga va entre las manos, no flotando enfrente.
+
 La cámara automática deja libre la franja del subtítulo: en modo `frase` reserva arriba (el sujeto va del 24 % al 94 % de la pantalla); en modo `palabra`, abajo (del 7 % al 62 %). La misma escena sirve para los 3 estilos: cambia `plan.estilo` (prueba: `videos/tinaco`, `tinaco-maqueta`, `tinaco-plano`).
 
 Capas de texto opcionales (`plan.textos`):
-- `{"modo": "frase" | "palabra"}` cambia el modo de subtítulo.
+- `{"modo": "frase" | "palabra" | "completo"}` cambia el modo de subtítulo. `completo` (toda la narración, palabra por palabra, la clave resaltada) ya funciona también en 3D y es el recomendado ("subtitula todo").
 - `{"titulos": true}` agrega el título grande del término.
 - `{"rotulos": true}` agrega "PERO…" en rojo y "ENTONCES" en amarillo, al estilo Numeronauta.
 - `{"rebobinar": true}` agrega ◀◀ entre problema y solución, al estilo Un Ingeniero.
@@ -165,7 +174,7 @@ Para que un tramo quede vertical aunque la pieza suba, usa un punto fijo abajo y
 
 ## Motor MOTION (`plan.estilo: "motion"`, 6-nov-2026)
 
-**El cuadro 0 es la portada.** El render nunca pide el instante 0 del timeline: empieza en su primer cuadro real, así que lo que entra en `t = 0` ya se ve desde el primer cuadro (antes salía el fondo vacío). Dos reglas: (1) lo que deba verse desde el arranque entra con `entra(pieza, 0, { dur: 0.01 })`; (2) un estado inicial distinto al normal (por ejemplo, abrir con el resultado y luego regresar al inicio) se fija al FINAL de `construir` con `gsap.set(elemento, {...})`, no con `tl.set(..., 0)`. Comprobarlo con `scripts/fotos.sh videos/<slug> 0`.
+**El cuadro 0 es la portada (12-nov-2026).** El render nunca pide el instante 0 del timeline: empieza en su primer cuadro real, así que lo que entra en `t = 0` ya se ve desde el primer cuadro (antes salía el fondo vacío). Dos reglas: (1) lo que deba verse desde el arranque entra con `entra(pieza, 0, { dur: 0.01 })`; (2) un estado inicial distinto al normal (por ejemplo, abrir con el resultado y luego regresar al inicio) se fija al FINAL de `construir` con `gsap.set(elemento, {...})`, no con `tl.set(..., 0)`. Comprobarlo con `scripts/fotos.sh videos/<slug> 0`.
 Para temas que no son físicos (marketing, ventas, procesos digitales). Vive en `motor-motion/` y `armar.py` lo elige solo por el estilo. Comparte con el motor 3D la voz, `timing.json`, los subtítulos (`textos.js`), el revisor, el vigía y el render. Al no tener WebGL, HyperFrames usa su captura rápida.
 
 - **Piezas** (`U.p.*`, en `motor-motion/piezas.js`): `celular` + vistas (`post`, `perfil`, `landing`, `whatsapp`, `creativo`), `objetivos` (Administrador de anuncios), `codigo` (píxel), `meta`, `audiencia`, `noti`, `metrica`, `registrados`, `vivo`, `oferta`, `regalo`, `chip`, `globo`, `tarjeta`.

@@ -26,6 +26,12 @@
       .frase span { display: inline-block; margin: 0 0.13em; color: var(--color-frase);
         -webkit-text-stroke: 14px #ffffff; paint-order: stroke fill; transform-origin: 50% 80%; }
       .frase.roja { --color-frase: #e8322b; }
+      /* ---- modo completo en 3D: TODA la narración, 2 renglones máximo; la clave resaltada ---- */
+      .frase.completa { font-size: 70px; top: 235px; line-height: 1.1; }
+      .frase.completa span { margin: 0 0.1em; color: #15171c; }
+      .frase.completa span.clave { color: #f07d00; }
+      .frase.completa.problema span.clave { color: #e8322b; }
+      .frase.completa.termino span.clave { color: #ffc93c; -webkit-text-stroke: 14px #15171c; }
 
       /* ---- modo palabra: una palabra a la vez, centrada abajo ---- */
       .palabra { position: absolute; top: 1220px; left: 0; right: 0; text-align: center; opacity: 0; color: #fff;
