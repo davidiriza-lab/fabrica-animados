@@ -164,6 +164,8 @@ Para que un tramo quede vertical aunque la pieza suba, usa un punto fijo abajo y
 
 
 ## Motor MOTION (`plan.estilo: "motion"`, 6-nov-2026)
+
+**El cuadro 0 es la portada.** El render nunca pide el instante 0 del timeline: empieza en su primer cuadro real, así que lo que entra en `t = 0` ya se ve desde el primer cuadro (antes salía el fondo vacío). Dos reglas: (1) lo que deba verse desde el arranque entra con `entra(pieza, 0, { dur: 0.01 })`; (2) un estado inicial distinto al normal (por ejemplo, abrir con el resultado y luego regresar al inicio) se fija al FINAL de `construir` con `gsap.set(elemento, {...})`, no con `tl.set(..., 0)`. Comprobarlo con `scripts/fotos.sh videos/<slug> 0`.
 Para temas que no son físicos (marketing, ventas, procesos digitales). Vive en `motor-motion/` y `armar.py` lo elige solo por el estilo. Comparte con el motor 3D la voz, `timing.json`, los subtítulos (`textos.js`), el revisor, el vigía y el render. Al no tener WebGL, HyperFrames usa su captura rápida.
 
 - **Piezas** (`U.p.*`, en `motor-motion/piezas.js`): `celular` + vistas (`post`, `perfil`, `landing`, `whatsapp`, `creativo`), `objetivos` (Administrador de anuncios), `codigo` (píxel), `meta`, `audiencia`, `noti`, `metrica`, `registrados`, `vivo`, `oferta`, `regalo`, `chip`, `globo`, `tarjeta`.

@@ -35,7 +35,10 @@
       window.__timelines = window.__timelines || {};
       window.tl = gsap.timeline({ paused: true });
       window.tl.set({}, {}, window.T.duracion);
-      window.__timelines["main"] = window.tl;
+      // Lo que mueve el render es "principal", que arrastra a tl desde su primer cuadro real (ver el final de este archivo).
+      window.principal = gsap.timeline({ paused: true });
+      window.principal.set({}, {}, window.T.duracion);
+      window.__timelines["main"] = window.principal;
     </script>
     <script src="motor/textos.js"></script>
     <script src="motor/ui.js"></script>
@@ -61,7 +64,10 @@
         await document.fonts.ready;
         construir(window.U, V, PLAN);
         window.U.preparar();
-        window.tl.seek(0);
+        // El cuadro 0 es la portada. En el instante 0 exacto de tl las animaciones aún no pintan su primer estado y todo
+        // sale oculto (fondo vacío). Por eso el render nunca pide el 0: principal lleva a tl de su primer cuadro al final.
+        window.principal.fromTo(window.tl, { time: 0.034 }, { time: window.T.duracion, duration: window.T.duracion, ease: "none", immediateRender: true }, 0);
+        window.principal.seek(0);
         window.__M = window.U;
       } catch (e) { window.__errorEscena = e; console.error(e); throw e; }
     </script>
