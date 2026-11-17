@@ -13,3 +13,6 @@ videos/*/.hyperframes/
 videos/*/audio/narracion.wav
 videos/*/audio/texto.txt
 revision.json
+videos/*/audio/narracion-fuente-antes.mp3
+videos/*/audio/frase-nueva.mp3
+videos/*/blender/

@@ -14,6 +14,7 @@ Whisper). Lo usa render.sh cuando la narración WAV se borró pero los tiempos y
 """
 import difflib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -40,11 +41,16 @@ def main() -> None:
     plan = leer_plan(video)
     frases = texto_narrado(plan)
     fuente = video / "audio" / "narracion-fuente.mp3"
+    if not fuente.exists():
+        sys.exit("✗ Falta audio/narracion-fuente.mp3: primero graba la voz con scripts/voz.py")
     if "--solo-audio" in sys.argv[2:] and (video / "timing.json").exists():
         normalizar(fuente, video / "audio" / "narracion.wav", plan.get("cola", COLA))
         print("narracion.wav lista (timing.json sin cambios)")
         return
 
+    if not (shutil.which(WHISPER) or Path(WHISPER).exists()) or not MODELO_WHISPER.exists():
+        sys.exit("✗ Falta whisper.cpp o su modelo (es lo que marca en qué segundo suena cada palabra).\n"
+                 "  Corre scripts/requisitos.sh: te da el comando exacto para instalar lo que falte.")
     with tempfile.TemporaryDirectory() as d:
         wav16 = Path(d) / "n.wav"
         correr(["ffmpeg", "-loglevel", "error", "-y", "-i", str(fuente), "-ar", "16000", "-ac", "1", str(wav16)])

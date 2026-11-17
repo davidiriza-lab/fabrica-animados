@@ -4,12 +4,15 @@ Uso: python3 scripts/voz.py videos/<slug> [--forzar]
 Lee   plan.json  (beats[].texto y, opcional, plan.voz = {id, modelo, estabilidad, velocidad})
 Crea  audio/narracion-fuente.mp3
 
-La llave vive en ~/.config/elevenlabs/api_key (nunca en el repo). Si no hay llave, usa
---kokoro para una voz de prueba local y gratis (HyperFrames TTS).
+La llave vive en ~/.config/elevenlabs/api_key (nunca en el repo) o en la variable de entorno
+ELEVENLABS_API_KEY. Si no hay llave, usa --kokoro para una voz de prueba local y gratis
+(HyperFrames TTS; la primera vez baja su modelo).
 """
 import argparse
 import json
+import os
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -22,6 +25,33 @@ LLAVE = Path.home() / ".config" / "elevenlabs" / "api_key"
 VOZ_DEFECTO = {"id": "qRUgOhnxGASxirG4fKjv", "modelo": "eleven_v4", "estabilidad": 0.45, "similitud": 0.8, "estilo": 0.15, "velocidad": 1.1}
 
 
+def llave() -> str:
+    """La llave de ElevenLabs (variable de entorno o archivo). Si no hay, explica qué hacer y se detiene."""
+    valor = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+    if not valor and LLAVE.is_file():
+        valor = LLAVE.read_text().strip()
+    if not valor:
+        sys.exit("✗ No hay llave de ElevenLabs.\n"
+                 "  · Para probar gratis, con una voz local de menor calidad: agrega --kokoro\n"
+                 "  · Para la voz buena: crea la llave en elevenlabs.io y guárdala con\n"
+                 "      mkdir -p ~/.config/elevenlabs && printf '%s' 'TU_LLAVE' > ~/.config/elevenlabs/api_key")
+    return valor
+
+
+def pedir(req: urllib.request.Request, espera: int):
+    """Llama a ElevenLabs; si responde con error, lo dice en claro en vez de soltar una traza."""
+    try:
+        return urllib.request.urlopen(req, timeout=espera)
+    except urllib.error.HTTPError as e:
+        detalle = e.read().decode("utf-8", "replace")[:400]
+        sys.exit(f"✗ ElevenLabs respondió {e.code}: {detalle}\n"
+                 "  Lo más común: la llave no es válida, se acabaron los créditos o la voz no está en tu cuenta\n"
+                 "  (agrégala a «My Voices» en ElevenLabs o pon otra en plan.json → \"voz\": {\"id\": \"…\"}).\n"
+                 "  Para seguir sin ElevenLabs: python3 scripts/voz.py videos/<slug> --kokoro")
+    except urllib.error.URLError as e:
+        sys.exit(f"✗ No se pudo conectar con ElevenLabs ({e.reason}). Revisa tu internet y vuelve a intentar.")
+
+
 def elevenlabs(texto: str, voz: dict, destino: Path) -> None:
     cuerpo = json.dumps({
         "text": texto,
@@ -31,8 +61,8 @@ def elevenlabs(texto: str, voz: dict, destino: Path) -> None:
                            "speed": voz["velocidad"], "use_speaker_boost": True},
     }).encode()
     req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voz['id']}?output_format=mp3_44100_192", data=cuerpo,
-                                 headers={"xi-api-key": LLAVE.read_text().strip(), "Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=300) as r:
+                                 headers={"xi-api-key": llave(), "Content-Type": "application/json"})
+    with pedir(req, 300) as r:
         destino.write_bytes(r.read())
         print(f"  créditos usados: {r.headers.get('character-cost', '?')}")
 
@@ -52,6 +82,8 @@ def main() -> None:
         return
     # Cada beat termina en punto: la pausa natural entre frases marca el ritmo del video.
     texto = " ".join(t if t[-1] in ".?!…" else t + "." for t in texto_narrado(plan))
+    if not a.kokoro:
+        llave()   # sin llave se detiene aquí, con las dos salidas (voz de prueba gratis o guardar la llave)
     print(f"narrando {len(texto)} caracteres…")
     if a.kokoro:
         wav = destino.with_suffix(".wav")

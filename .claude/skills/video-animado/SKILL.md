@@ -6,8 +6,9 @@ description: Hace videos animados verticales con la fábrica de este repo - expl
 # Video animado
 
 1. Lee `CLAUDE.md` en la raíz del repo y síguelo. Empieza por la tabla de estilos y avisa en una línea cuál elegiste.
-2. Si es la primera vez, corre `scripts/requisitos.sh`.
-3. Guion: `guias/NARRATIVA.md`. Muéstrale el guion al usuario y espera su OK antes de generar la voz.
-4. Animación: `guias/ESCENAS.md`. Copia la estructura del ejemplo más parecido en `videos/`.
-5. Antes del render: `node scripts/revisar.mjs` en cero errores y el vigía de `guias/VIGIA.md` en un subagente aparte.
-6. Lo pesado va uno a la vez. Al terminar, `scripts/limpiar.sh videos/<slug>`.
+2. Si es la primera vez, corre `scripts/requisitos.sh`. Para renderizar un ejemplo basta la primera parte (no gasta créditos); para un video nuevo hace falta también Whisper.
+3. Guion: `guias/NARRATIVA.md`. Por defecto corto (55 a 70 s, 4 o 5 problemas). Muéstrale el guion al usuario y espera su OK antes de generar la voz.
+4. Voz: ElevenLabs si hay llave; si no, dilo y usa la voz de prueba gratis (`--kokoro`). Nunca te detengas por falta de llave.
+5. Animación: `guias/ESCENAS.md`. Copia la estructura del ejemplo más parecido en `videos/`.
+6. Antes del render: `node scripts/revisar.mjs` en cero errores y el vigía de `guias/VIGIA.md` en un subagente aparte.
+7. Lo pesado va uno a la vez. Al terminar, `scripts/limpiar.sh videos/<slug>`, dile al usuario dónde quedó el MP4 y ábrelo.

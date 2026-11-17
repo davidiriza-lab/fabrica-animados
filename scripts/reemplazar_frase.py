@@ -19,7 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from comun import NICE, correr, leer_plan  # noqa: E402
-from voz import LLAVE, VOZ_DEFECTO  # noqa: E402
+from voz import VOZ_DEFECTO, llave, pedir  # noqa: E402
 
 
 def main() -> None:
@@ -53,9 +53,9 @@ def main() -> None:
         "voice_settings": {"stability": voz["estabilidad"], "similarity_boost": voz["similitud"], "style": voz["estilo"], "speed": voz["velocidad"], "use_speaker_boost": True},
     }).encode()
     req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{voz['id']}?output_format=mp3_44100_192", data=cuerpo,
-                                 headers={"xi-api-key": LLAVE.read_text().strip(), "Content-Type": "application/json"})
+                                 headers={"xi-api-key": llave(), "Content-Type": "application/json"})
     frase = video / "audio" / "frase-nueva.mp3"
-    with urllib.request.urlopen(req, timeout=120) as r:
+    with pedir(req, 120) as r:
         frase.write_bytes(r.read())
         print(f"  créditos usados: {r.headers.get('character-cost', '?')}")
 
